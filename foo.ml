@@ -1,1 +1,1 @@
-let _ = [%getenv "HOME"];
+let _ = print_string [%getenv "HOME"];

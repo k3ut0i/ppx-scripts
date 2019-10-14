@@ -1,2 +1,3 @@
 PKG compiler-libs.common
 FLG -I /home/keutoi/.opam/default/lib/
+FLG -ppx ./ppx_getenv.native
