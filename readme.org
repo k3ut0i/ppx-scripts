@@ -1,9 +1,15 @@
 * A Collection of simple ppx extensions.
 
 [[./ppx_getenv.ml][ppx_getenv.ml]] :: A Simple compile time text generator [fn:1].
-[[./ppx_addone.ml][ppx_addone.ml]] :: 
+[[./ppx_addone.ml][
+ppx_addone.ml]] :: 
  Deep map 1+ for constant integers at compile time. i.e., 1 + 2 --> 2 + 3.
  Not recursive yet. Referenced [fn:2] but didn't follow completely.
+[[./ppx_equiv.ml][ppx_equiv.ml]] :: A simple translator of bi-imply to conjunction of implications.
+ a <==> b to (a ==> b) && (b ==> a). 
+
+** TODO Deep maps
+   apply the equiv and add-one to recursive expressions.
 
 * Footnotes
 
