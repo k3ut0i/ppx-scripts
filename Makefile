@@ -2,7 +2,10 @@ OPAM_BIN_DIR = /home/keutoi/.opam/default/bin
 OCC = $(OPAM_BIN_DIR)/ocamlc
 OCB = $(OPAM_BIN_DIR)/ocamlbuild
 
-.PHONY : clean test_foo test_dump_source_foo
+.PHONY : clean test_foo test_dump_source_foo all-ppx
+
+all-ppx : ppx_addone.native ppx_getenv.native ppx_equiv.native
+
 clean :
 	rm -rf *.native *.cmi *.cmo a.out _build
 

@@ -9,15 +9,14 @@ let arith_ops = ["+"; "*"; "-"; "/"]
 
 let addone_to_string i = string_of_int ((int_of_string i) + 1)
 
-let addone_to_arg arg = match arg with
+let rec addone_to_arg arg = match arg with
   | (label, {pexp_desc = Pexp_constant (Pconst_integer (i_str, i_op))})
     -> (label, Exp.mk (Pexp_constant (Pconst_integer
                                         (addone_to_string i_str , i_op))))
-  | _ -> arg
-       
-let addone_to_args args = map addone_to_arg args
+  | (label, e) -> (label, addone e)
+and  addone_to_args args = map addone_to_arg args
               
-let addone e = match e with
+and addone e = match e with
   | { pexp_desc = Pexp_apply
                     ({pexp_desc = Pexp_ident {txt = Lident id_str}}, args)}
     -> {e with pexp_desc = Pexp_apply

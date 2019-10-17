@@ -9,19 +9,21 @@ let (==>) a b = not (a && not b)
 let (<==>) a b = (a ==> b) && (b ==> a)
 
 exception Equiv_no_two_args
-let split_equiv args = match args with
+let rec split_equiv args = match args with
   | a1 :: a2 :: []
-    -> let lr = Exp.mk
+    -> let a1' = (fst a1, expand_equiv (snd a1)) in
+       let a2' = (fst a2, expand_equiv (snd a2)) in
+       let lr = Exp.mk
                   (Pexp_apply (Exp.mk
                                  (Pexp_ident {txt = Lident "==>";
                                               loc = (!default_loc)}),
-                               (a1 :: a2 :: [])))
+                               (a1' :: a2' :: [])))
        in
        let rl = Exp.mk
                   (Pexp_apply (Exp.mk
                                  (Pexp_ident {txt = Lident "==>";
                                               loc = (!default_loc)}),
-                               (a2 :: a1 :: [])))
+                               (a2' :: a1' :: [])))
        in Exp.mk (Pexp_apply (Exp.mk
                                 (Pexp_ident {txt = Lident "&&";
                                               loc = (!default_loc)}),
@@ -29,12 +31,12 @@ let split_equiv args = match args with
        
   | _ -> raise Equiv_no_two_args
                
-let expand_equiv e = match e with
+and expand_equiv e = match e with
   | {pexp_desc = Pexp_apply
                    ({pexp_desc = Pexp_ident {txt = Lident "<==>"}},
                     args)}
     -> split_equiv args
-  | _ -> print_string "did not match equiv\n"; e
+  | _ -> e
            
 let equiv_mapper argv =
   {default_mapper with
