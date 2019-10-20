@@ -19,6 +19,7 @@ and  addone_to_args args = map addone_to_arg args
 and addone e = match e with
   | { pexp_desc = Pexp_apply
                     ({pexp_desc = Pexp_ident {txt = Lident id_str}}, args)}
+    (* should i check the id_str if it is an arithmetic operator? *)
     -> {e with pexp_desc = Pexp_apply
                              ({pexp_desc = Pexp_ident {txt = Lident id_str;
                                                        loc = (!default_loc)};
