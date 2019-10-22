@@ -24,7 +24,28 @@ let con_dec_mapper mapper decl =
      {(default_mapper.constructor_declaration mapper decl)
      with pcd_attributes = attrs}
   (* | _ -> default_mapper.constructor_declaration mapper decl *)
-       
+
+let structure_mapper mapper decl =
+  match decl with
+  | {pstr_desc = Pstr_type (_, [type_decl])} ->
+     begin
+       match type_decl with
+       | {ptype_name = {txt = "t";_};
+          ptype_kind = Ptype_variant con_decls;
+          ptype_attributes;_} ->
+          begin
+            match
+              List.filter (fun ({attr_name; _}) -> attr_name.txt = "id_of")
+            with
+            | _ -> default_mapper.structure mapper [decl]
+          end
+     end
+  | _ -> default_mapper.structure mapper [decl]
+
+(* What is the sequence of mappers executed?
+If type_dec_mapper and con_dec_mapper remove attributes before 
+structure_mapper then wont the structure_mapper default?*)
+            
 let id_of_mapper = {
     default_mapper with
     structure = structure_mapper;

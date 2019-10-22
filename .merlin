@@ -3,3 +3,4 @@ FLG -I /home/keutoi/.opam/default/lib/
 FLG -ppx ./ppx_getenv.native
 FLG -ppx ./ppx_addone.native
 FLG -ppx ./ppx_equiv.native
+FLG -ppx ./ppx_arith.native
