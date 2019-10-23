@@ -16,20 +16,16 @@ let op_map (op_str : string) : string =
 
 let rec translate_arith_exp e =
   match e with
-  | {pexp_desc = Pexp_apply ({pexp_desc = Pexp_ident
+  | {pexp_desc = Pexp_apply (({pexp_desc = Pexp_ident
                                             {txt = Lident fn_str; loc};
-                              pexp_loc;
-                              pexp_loc_stack;
-                              pexp_attributes},
+                               _}) as fn_exp,
                              args)} ->
      let trans_arg (l1, e1) = (l1, translate_arith_exp e1) in
      {e with pexp_desc = Pexp_apply
-                           ({pexp_desc = Pexp_ident
-                                           {txt=Lident (op_map(fn_str));
-                                            loc = loc};
-                             pexp_attributes = pexp_attributes;
-                             pexp_loc = pexp_loc;
-                             pexp_loc_stack = pexp_loc_stack},
+                           ({fn_exp with
+                              pexp_desc =
+                                Pexp_ident {txt = Lident (op_map fn_str);
+                                            loc = loc}},
                             List.map trans_arg args)}
   | _ -> e
        

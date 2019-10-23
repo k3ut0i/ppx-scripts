@@ -7,10 +7,84 @@
 [[./ppx_addone.ml][ppx_addone.ml]] :: 
 Deep map 1+ for constant integers at compile time. i.e., 1 + 2 --> 2 + 3.
 Referenced [fn:2] but didn't follow completely.
+#+BEGIN_SRC sh :exports results :results output code
+  cat ./foo_addone.ml
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC ocaml
+let _ = [%addone 1 + 2]
+let _ = [%addone 1 * (2 + 3 * 4)]
+#+END_SRC
+
+#+BEGIN_SRC sh :exports results :results output code
+  make test_dump_source_foo_addone 2>/dev/null | tail -n +2
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC ocaml
+let _ = 2 + 3
+let _ = 2 * (3 + (4 * 5))
+#+END_SRC
 
 ** Equiv
 [[./ppx_equiv.ml][ppx_equiv.ml]] :: A simple translator of bi-imply to conjunction of implications.
  a <==> b to (a ==> b) && (b ==> a). 
+#+BEGIN_SRC sh :exports results :results output code
+  cat ./foo_equiv.ml
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC ocaml
+let (==>) a b = not (a && not b)
+
+let (<==>) a b = (a ==> b) && (b ==> a)
+
+(* I want to expand <==> in this.*)
+let equiv_theorem a b c =
+  [%equiv ((a <==> b) <==> c) <==> (a <==> (b <==> c))]
+
+let _ = [%equiv true <==> false]    
+#+END_SRC
+
+#+BEGIN_SRC sh :exports results :results code
+  make test_dump_source_foo_equiv 2>/dev/null | tail -n +2
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC ocaml
+let (==>) a b = not (a && (not b))
+let (<==>) a b = (a ==> b) && (b ==> a)
+let equiv_theorem a b c =
+  (((((a ==> b) && (b ==> a)) ==> c) && (c ==> ((a ==> b) && (b ==> a)))) ==>
+     ((a ==> ((b ==> c) && (c ==> b))) && (((b ==> c) && (c ==> b)) ==> a)))
+    &&
+    (((a ==> ((b ==> c) && (c ==> b))) && (((b ==> c) && (c ==> b)) ==> a))
+       ==>
+       ((((a ==> b) && (b ==> a)) ==> c) && (c ==> ((a ==> b) && (b ==> a)))))
+let _ = (true ==> false) && (false ==> true)
+#+END_SRC
+
+** Arith
+[[./ppx_arith.ml][ppx_arith.ml]] :: A rewriter for arithmetic expressions.
+
+#+BEGIN_SRC sh :exports results :results output code
+  cat ./foo_arith.ml
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC ocaml
+let _ = [%arith 1 + (2 * 3) - (4 / 7)]
+#+END_SRC
+
+#+BEGIN_SRC sh :exports results :results output code
+   make test_dump_source_foo_arith 2>/dev/null | tail -n +2
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC ocaml
+let _ = Sub (Add 1 (Mul 2 3)) (Div 4 7)
+#+END_SRC
 
 # ** DONE Deep maps
 #    CLOSED: [2019-10-17 Thu 07:17]
